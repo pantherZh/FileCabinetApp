@@ -24,6 +24,12 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
+        public static void Stat(string parameters)
+        {
+            var recordsCount = FileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
+        }
+
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
