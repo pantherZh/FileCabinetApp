@@ -16,6 +16,8 @@ namespace FileCabinetApp
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create)
         };
 
         private static string[][] helpMessages = new string[][]
@@ -101,6 +103,15 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Create(string parameters)
+        {
+            string firstName = Console.ReadLine();
+            string lastName = Console.ReadLine();
+            _ = DateTime.TryParse(Console.ReadLine(), out DateTime dateOfBirth);
+            FileCabinetService fls = new FileCabinetService();
+            Console.WriteLine($"Record #{fls.CreateRecord(firstName, lastName, dateOfBirth)} is created");
         }
     }
 }

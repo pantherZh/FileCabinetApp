@@ -8,19 +8,29 @@ namespace FileCabinetApp
     {
         private static readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        public int CreateRecord(string FirstName, string Lastname, DateTime dateOfBirth)
+        public static int GetStat()
         {
-            return 0;
+            return list.Count;
+        }
+
+        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
+        {
+            var record = new FileCabinetRecord
+            {
+                Id = list.Count + 1,
+                FirstName = firstName,
+                LastName = lastName,
+                DateOfBirth = dateOfBirth,
+            };
+
+            list.Add(record);
+
+            return record.Id;
         }
 
         public FileCabinetRecord[] GetRecords()
         {
             return Array.Empty<FileCabinetRecord>();
-        }
-
-        public static int GetStat()
-        {
-            return list.Count;
         }
     }
 }
