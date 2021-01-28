@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace FileCabinetApp
 {
@@ -16,13 +17,25 @@ namespace FileCabinetApp
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new string[] { "stat", "gets number of records", "The 'stat' command gets number of records." },
+            new string[] { "create", "creates record in file", "The 'create' command cretaes record in file." },
+            new string[] { "list", "displays all records in file", "The 'list' command displays all records in file." },
         };
+
+        public static void Stat(string parameters)
+        {
+            var recordsCount = FileCabinetService.GetStat;
+            Console.WriteLine($"{recordsCount} record(s).");
+        }
 
         public static void Main(string[] args)
         {
@@ -43,7 +56,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     const int parametersIndex = 1;
@@ -68,7 +81,7 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
@@ -95,6 +108,32 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First Name: ");
+            string firstName = Console.ReadLine();
+            Console.Write("Last Name: ");
+            string lastName = Console.ReadLine();
+            Console.Write("Date Time(MM/dd/yyyy): ");
+            _ = DateTime.TryParse(Console.ReadLine(), out DateTime dateOfBirth);
+            Console.Write("Salary: ");
+            _ = decimal.TryParse(Console.ReadLine(), out decimal salary);
+            Console.Write("Key: ");
+            _ = char.TryParse(Console.ReadLine(), out char key);
+            Console.Write("Password for Cabinet: ");
+            _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
+            FileCabinetService fls = new FileCabinetService();
+            Console.WriteLine($"Record #{fls.CreateRecord(firstName, lastName, dateOfBirth, salary, key, passForCabinet)} is created");
+        }
+
+        private static void List(string parameters)
+        {
+            foreach (var obj in FileCabinetService.GetRecords())
+            {
+                Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
+            }
         }
     }
 }
