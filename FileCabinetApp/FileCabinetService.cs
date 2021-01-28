@@ -6,31 +6,37 @@ namespace FileCabinetApp
 {
     public class FileCabinetService
     {
-        private static readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
 
-        public static int GetStat()
+        public static int GetStat
         {
-            return list.Count;
+            get
+            {
+                return List.Count;
+            }
         }
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
+        public static FileCabinetRecord[] GetRecords()
+        {
+            return List.ToArray();
+        }
+
+        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
         {
             var record = new FileCabinetRecord
             {
-                Id = list.Count + 1,
+                Id = List.Count + 1,
                 FirstName = firstName,
                 LastName = lastName,
                 DateOfBirth = dateOfBirth,
+                Salary = salary,
+                Key = key,
+                PassForCabinet = passForCabinet,
             };
 
-            list.Add(record);
+            List.Add(record);
 
             return record.Id;
-        }
-
-        public FileCabinetRecord[] GetRecords()
-        {
-            return Array.Empty<FileCabinetRecord>();
         }
     }
 }
