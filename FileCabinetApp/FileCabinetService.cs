@@ -21,6 +21,33 @@ namespace FileCabinetApp
             return List.ToArray();
         }
 
+        public static void EditRecord(int id, FileCabinetRecord flc)
+        {
+            if (flc is null)
+            {
+                throw new ArgumentNullException($"{nameof(flc)} is null.");
+            }
+
+            Console.Write("First Name: ");
+            flc.FirstName = Console.ReadLine();
+            Console.Write("Last Name: ");
+            flc.LastName = Console.ReadLine();
+            Console.Write("Date Time(MM/dd/yyyy): ");
+            _ = DateTime.TryParse(Console.ReadLine(), out DateTime dateOfBirth);
+            Console.Write("Salary: ");
+            _ = decimal.TryParse(Console.ReadLine(), out decimal salary);
+            Console.Write("Key(A-Z): ");
+            _ = char.TryParse(Console.ReadLine(), out char key);
+            Console.Write("Password for Cabinet: ");
+            _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
+            flc.DateOfBirth = dateOfBirth;
+            flc.Salary = salary;
+            flc.Key = key;
+            flc.PassForCabinet = passForCabinet;
+
+            List[id - 1] = flc;
+        }
+
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
         {
             var record = new FileCabinetRecord

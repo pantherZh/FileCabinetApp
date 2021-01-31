@@ -28,7 +28,6 @@ namespace FileCabinetApp
             {
                 try
                 {
-
                     if (value is null)
                     {
                         throw new ArgumentNullException(nameof(value), $"{nameof(value)} is null.");
@@ -132,7 +131,6 @@ namespace FileCabinetApp
                 this.salary = value;
             }
         }
-
 
         public char Key
         {

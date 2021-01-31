@@ -20,6 +20,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -29,6 +30,7 @@ namespace FileCabinetApp
             new string[] { "stat", "gets number of records", "The 'stat' command gets number of records." },
             new string[] { "create", "creates record in file", "The 'create' command cretaes record in file." },
             new string[] { "list", "displays all records in file", "The 'list' command displays all records in file." },
+            new string[] { "edit", "edits created files", "The 'edit' command edits created files." },
         };
 
         public static void Stat(string parameters)
@@ -124,7 +126,7 @@ namespace FileCabinetApp
                 _ = DateTime.TryParse(Console.ReadLine(), out DateTime dateOfBirth);
                 Console.Write("Salary: ");
                 _ = decimal.TryParse(Console.ReadLine(), out decimal salary);
-                Console.Write("Key: ");
+                Console.Write("Key(A-Z): ");
                 _ = char.TryParse(Console.ReadLine(), out char key);
                 Console.Write("Password for Cabinet: ");
                 _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
@@ -138,9 +140,36 @@ namespace FileCabinetApp
 
         private static void List(string parameters)
         {
+            if (FileCabinetService.GetRecords().Length == 0)
+            {
+                Console.WriteLine("The list is empty.");
+            }
+
             foreach (var obj in FileCabinetService.GetRecords())
             {
                 Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            _ = int.TryParse(Console.ReadLine(), out int id);
+            foreach (var obj in FileCabinetService.GetRecords())
+            {
+                if (obj.Id == id)
+                {
+                    FileCabinetService.EditRecord(obj.Id, obj);
+                    return;
+                }
+            }
+
+            try
+            {
+                throw new ArgumentException($"#{id} record is not found.");
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
     }
