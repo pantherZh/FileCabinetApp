@@ -13,6 +13,8 @@ namespace FileCabinetApp
         private char key;
         private short passForCabinet;
 
+        public static bool Error { get; set; }
+
         public int Id { get; set; }
 
         public string FirstName
@@ -24,14 +26,23 @@ namespace FileCabinetApp
 
             set
             {
-                if (value is null)
+                try
                 {
-                    throw new ArgumentNullException(nameof(value), $"{nameof(value)} is null.");
-                }
 
-                if (!((value.Length >= 2 && value.Length <= 60) || string.IsNullOrWhiteSpace(value)))
+                    if (value is null)
+                    {
+                        throw new ArgumentNullException(nameof(value), $"{nameof(value)} is null.");
+                    }
+
+                    if (!((value.Length >= 2 && value.Length <= 60) || string.IsNullOrWhiteSpace(value)))
+                    {
+                        throw new ArgumentException($"{nameof(this.firstname)} isn't correct.");
+                    }
+                }
+                catch (ArgumentException e)
                 {
-                    throw new ArgumentException($"Incorrect data entry.", nameof(value));
+                    Console.WriteLine(e.Message);
+                    Error = true;
                 }
 
                 this.firstname = value;
@@ -47,14 +58,22 @@ namespace FileCabinetApp
 
             set
             {
-                if (value is null)
+                try
                 {
-                    throw new ArgumentNullException(nameof(value), $"{nameof(value)} is null.");
-                }
+                    if (value is null)
+                    {
+                        throw new ArgumentNullException(nameof(value), $"{nameof(value)} is null.");
+                    }
 
-                if (!((value.Length >= 2 && value.Length <= 60) || string.IsNullOrWhiteSpace(value)))
+                    if (!((value.Length >= 2 && value.Length <= 60) || string.IsNullOrWhiteSpace(value)))
+                    {
+                        throw new ArgumentException($"{nameof(this.lastName)} isn't correct.");
+                    }
+                }
+                catch (ArgumentException e)
                 {
-                    throw new ArgumentException($"Incorrect data entry.", nameof(value));
+                    Console.WriteLine(e.Message);
+                    Error = true;
                 }
 
                 this.lastName = value;
@@ -70,13 +89,21 @@ namespace FileCabinetApp
 
             set
             {
-               DateTime date = new DateTime(1950, 1, 1);
-               if (value > DateTime.Now || value < date)
-               {
-                  throw new ArgumentException("Incorrect data entry.", nameof(value));
-               }
+                DateTime date = new DateTime(1950, 1, 1);
+                try
+                {
+                    if (value > DateTime.Now || value < date)
+                    {
+                        throw new ArgumentException($"{nameof(this.dateOfbirth)} isn't correct.");
+                    }
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                    Error = true;
+                }
 
-               this.dateOfbirth = value;
+                this.dateOfbirth = value;
             }
         }
 
@@ -89,9 +116,17 @@ namespace FileCabinetApp
 
             set
             {
-                if (value > 10000 || value < 500)
+                try
                 {
-                    throw new ArgumentException("Incorrect data entry.", nameof(value));
+                    if (value > 10000 || value < 500)
+                    {
+                        throw new ArgumentException($"{nameof(this.salary)} isn't correct.");
+                    }
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                    Error = true;
                 }
 
                 this.salary = value;
@@ -108,9 +143,17 @@ namespace FileCabinetApp
 
             set
             {
-                if (value < 'A' || value > 'Z')
+                try
                 {
-                    throw new ArgumentException("Incorrect data entry.", nameof(value));
+                    if (value < 'A' || value > 'Z')
+                    {
+                        throw new ArgumentException($"{nameof(this.key)} isn't correct.");
+                    }
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                    Error = true;
                 }
 
                 this.key = value;
@@ -126,9 +169,17 @@ namespace FileCabinetApp
 
             set
             {
-                if (value < 1 || value > 99)
+                try
                 {
-                    throw new ArgumentException("Incorrect data entry.", nameof(value));
+                    if (value < 1 || value > 99)
+                    {
+                        throw new ArgumentException($"{nameof(this.passForCabinet)} isn't correct.");
+                    }
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                    Error = true;
                 }
 
                 this.passForCabinet = value;

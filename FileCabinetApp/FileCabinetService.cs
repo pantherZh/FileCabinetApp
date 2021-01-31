@@ -34,8 +34,12 @@ namespace FileCabinetApp
                 PassForCabinet = passForCabinet,
             };
 
-            List.Add(record);
+            if (FileCabinetRecord.Error)
+            {
+                return 0;
+            }
 
+            List.Add(record);
             return record.Id;
         }
     }

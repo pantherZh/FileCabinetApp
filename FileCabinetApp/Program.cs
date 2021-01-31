@@ -112,20 +112,28 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            Console.Write("First Name: ");
-            string firstName = Console.ReadLine();
-            Console.Write("Last Name: ");
-            string lastName = Console.ReadLine();
-            Console.Write("Date Time(MM/dd/yyyy): ");
-            _ = DateTime.TryParse(Console.ReadLine(), out DateTime dateOfBirth);
-            Console.Write("Salary: ");
-            _ = decimal.TryParse(Console.ReadLine(), out decimal salary);
-            Console.Write("Key: ");
-            _ = char.TryParse(Console.ReadLine(), out char key);
-            Console.Write("Password for Cabinet: ");
-            _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
-            FileCabinetService fls = new FileCabinetService();
-            Console.WriteLine($"Record #{fls.CreateRecord(firstName, lastName, dateOfBirth, salary, key, passForCabinet)} is created");
+            int id;
+            do
+            {
+                FileCabinetRecord.Error = false;
+                Console.Write("First Name: ");
+                string firstName = Console.ReadLine();
+                Console.Write("Last Name: ");
+                string lastName = Console.ReadLine();
+                Console.Write("Date Time(MM/dd/yyyy): ");
+                _ = DateTime.TryParse(Console.ReadLine(), out DateTime dateOfBirth);
+                Console.Write("Salary: ");
+                _ = decimal.TryParse(Console.ReadLine(), out decimal salary);
+                Console.Write("Key: ");
+                _ = char.TryParse(Console.ReadLine(), out char key);
+                Console.Write("Password for Cabinet: ");
+                _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
+
+                FileCabinetService fls = new FileCabinetService();
+                id = fls.CreateRecord(firstName, lastName, dateOfBirth, salary, key, passForCabinet);
+            }
+            while (FileCabinetRecord.Error);
+            Console.WriteLine($"Record #{id} is created");
         }
 
         private static void List(string parameters)
