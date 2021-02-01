@@ -69,5 +69,19 @@ namespace FileCabinetApp
             List.Add(record);
             return record.Id;
         }
+
+        public static FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
+            foreach (var obj in List)
+            {
+                if (firstName.IndexOf(obj.FirstName, StringComparison.InvariantCultureIgnoreCase) != -1)
+                {
+                    namesArr.Add(obj);
+                }
+            }
+
+            return namesArr.ToArray();
+        }
     }
 }
