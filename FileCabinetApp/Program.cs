@@ -186,6 +186,13 @@ namespace FileCabinetApp
                     Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
                 }
             }
+            else if (inputs[0].Equals("lastname", StringComparison.OrdinalIgnoreCase))
+            {
+                foreach (var obj in FileCabinetService.FindByLastName(inputs[1].ToString()))
+                {
+                    Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
+                }
+            }
         }
     }
 }
