@@ -97,5 +97,25 @@ namespace FileCabinetApp
 
             return namesArr.ToArray();
         }
+
+        public static FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfbirth)
+        {
+            Console.WriteLine(dateOfbirth);
+            Console.WriteLine(dateOfbirth.ToString().Length);
+            Console.WriteLine("---");
+            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
+            foreach (var obj in List)
+            {
+                if (dateOfbirth.Equals(obj.DateOfBirth))
+                {
+                    namesArr.Add(obj);
+                }
+
+                Console.WriteLine(obj.DateOfBirth);
+                Console.WriteLine(dateOfbirth.ToString().Length);
+            }
+
+            return namesArr.ToArray();
+        }
     }
 }
