@@ -28,6 +28,8 @@ namespace FileCabinetApp
                 throw new ArgumentNullException($"{nameof(flc)} is null.");
             }
 
+            FileCabinetRecord.FirstNameDictionary.Remove(flc.FirstName);
+
             Console.Write("First Name: ");
             flc.FirstName = Console.ReadLine();
             Console.Write("Last Name: ");
@@ -45,7 +47,61 @@ namespace FileCabinetApp
             flc.Key = key;
             flc.PassForCabinet = passForCabinet;
 
+            FileCabinetRecord.FirstNameDictionary[flc.FirstName] = flc;
             List[id - 1] = flc;
+        }
+
+        public static FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            if (firstName is null)
+            {
+                throw new ArgumentNullException($"{nameof(firstName)} is null.");
+            }
+
+            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
+            if (FileCabinetRecord.FirstNameDictionary.ContainsKey(firstName))
+            {
+                namesArr.Add(FileCabinetRecord.FirstNameDictionary[firstName]);
+            }
+            else
+            {
+                Console.WriteLine($"{firstName} Key is not found.");
+            }
+
+            return namesArr.ToArray();
+        }
+
+        public static FileCabinetRecord[] FindByLastName(string lastName)
+        {
+            if (lastName is null)
+            {
+                throw new ArgumentNullException($"{nameof(lastName)} is null.");
+            }
+
+            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
+            foreach (var obj in List)
+            {
+                if (lastName.IndexOf(obj.LastName, StringComparison.InvariantCultureIgnoreCase) != -1)
+                {
+                    namesArr.Add(obj);
+                }
+            }
+
+            return namesArr.ToArray();
+        }
+
+        public static FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfbirth)
+        {
+            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
+            foreach (var obj in List)
+            {
+                if (dateOfbirth.Equals(obj.DateOfBirth))
+                {
+                    namesArr.Add(obj);
+                }
+            }
+
+            return namesArr.ToArray();
         }
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
@@ -67,55 +123,8 @@ namespace FileCabinetApp
             }
 
             List.Add(record);
+            FileCabinetRecord.FirstNameDictionary.Add(firstName, record);
             return record.Id;
-        }
-
-        public static FileCabinetRecord[] FindByFirstName(string firstName)
-        {
-            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
-            foreach (var obj in List)
-            {
-                if (firstName.IndexOf(obj.FirstName, StringComparison.InvariantCultureIgnoreCase) != -1)
-                {
-                    namesArr.Add(obj);
-                }
-            }
-
-            return namesArr.ToArray();
-        }
-
-        public static FileCabinetRecord[] FindByLastName(string lastName)
-        {
-            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
-            foreach (var obj in List)
-            {
-                if (lastName.IndexOf(obj.LastName, StringComparison.InvariantCultureIgnoreCase) != -1)
-                {
-                    namesArr.Add(obj);
-                }
-            }
-
-            return namesArr.ToArray();
-        }
-
-        public static FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfbirth)
-        {
-            Console.WriteLine(dateOfbirth);
-            Console.WriteLine(dateOfbirth.ToString().Length);
-            Console.WriteLine("---");
-            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
-            foreach (var obj in List)
-            {
-                if (dateOfbirth.Equals(obj.DateOfBirth))
-                {
-                    namesArr.Add(obj);
-                }
-
-                Console.WriteLine(obj.DateOfBirth);
-                Console.WriteLine(dateOfbirth.ToString().Length);
-            }
-
-            return namesArr.ToArray();
         }
     }
 }

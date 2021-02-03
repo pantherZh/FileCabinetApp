@@ -6,12 +6,26 @@ namespace FileCabinetApp
 {
     public class FileCabinetRecord
     {
+        private static Dictionary<string, FileCabinetRecord> firstNameDictionary = new Dictionary<string, FileCabinetRecord>();
         private string firstname;
         private string lastName;
         private DateTime dateOfbirth;
         private decimal salary;
         private char key;
         private short passForCabinet;
+
+        public static Dictionary<string, FileCabinetRecord> FirstNameDictionary
+        {
+            get
+            {
+                return firstNameDictionary;
+            }
+
+            set
+            {
+                firstNameDictionary = value;
+            }
+        }
 
         public static bool Error { get; set; }
 
