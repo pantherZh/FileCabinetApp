@@ -29,6 +29,7 @@ namespace FileCabinetApp
             }
 
             FileCabinetRecord.FirstNameDictionary.Remove(flc.FirstName);
+            FileCabinetRecord.LastNameDictionary.Remove(flc.LastName);
 
             Console.Write("First Name: ");
             flc.FirstName = Console.ReadLine();
@@ -47,7 +48,8 @@ namespace FileCabinetApp
             flc.Key = key;
             flc.PassForCabinet = passForCabinet;
 
-            FileCabinetRecord.FirstNameDictionary[flc.FirstName] = flc;
+            FileCabinetRecord.FirstNameDictionary[flc.FirstName] = new List<FileCabinetRecord> { flc };
+            FileCabinetRecord.LastNameDictionary[flc.LastName] = new List<FileCabinetRecord> { flc };
             List[id - 1] = flc;
         }
 
@@ -58,17 +60,16 @@ namespace FileCabinetApp
                 throw new ArgumentNullException($"{nameof(firstName)} is null.");
             }
 
-            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
             if (FileCabinetRecord.FirstNameDictionary.ContainsKey(firstName))
             {
-                namesArr.Add(FileCabinetRecord.FirstNameDictionary[firstName]);
+                return FileCabinetRecord.FirstNameDictionary[firstName].ToArray();
             }
             else
             {
                 Console.WriteLine($"{firstName} Key is not found.");
             }
 
-            return namesArr.ToArray();
+            return Array.Empty<FileCabinetRecord>();
         }
 
         public static FileCabinetRecord[] FindByLastName(string lastName)
@@ -78,16 +79,16 @@ namespace FileCabinetApp
                 throw new ArgumentNullException($"{nameof(lastName)} is null.");
             }
 
-            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
-            foreach (var obj in List)
+            if (FileCabinetRecord.LastNameDictionary.ContainsKey(lastName))
             {
-                if (lastName.IndexOf(obj.LastName, StringComparison.InvariantCultureIgnoreCase) != -1)
-                {
-                    namesArr.Add(obj);
-                }
+                return FileCabinetRecord.LastNameDictionary[lastName].ToArray();
+            }
+            else
+            {
+                Console.WriteLine($"{lastName} Key is not found.");
             }
 
-            return namesArr.ToArray();
+            return Array.Empty<FileCabinetRecord>();
         }
 
         public static FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfbirth)
@@ -123,7 +124,27 @@ namespace FileCabinetApp
             }
 
             List.Add(record);
-            FileCabinetRecord.FirstNameDictionary.Add(firstName, record);
+
+            if (!FileCabinetRecord.FirstNameDictionary.ContainsKey(firstName))
+            {
+                FileCabinetRecord.FirstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
+                FileCabinetRecord.FirstNameDictionary[firstName].Add(record);
+            }
+            else
+            {
+                FileCabinetRecord.FirstNameDictionary[firstName].Add(record);
+            }
+
+            if (!FileCabinetRecord.LastNameDictionary.ContainsKey(lastName))
+            {
+                FileCabinetRecord.LastNameDictionary.Add(lastName, new List<FileCabinetRecord>());
+                FileCabinetRecord.LastNameDictionary[lastName].Add(record);
+            }
+            else
+            {
+                FileCabinetRecord.LastNameDictionary[lastName].Add(record);
+            }
+
             return record.Id;
         }
     }

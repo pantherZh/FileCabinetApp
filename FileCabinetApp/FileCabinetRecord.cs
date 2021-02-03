@@ -6,7 +6,8 @@ namespace FileCabinetApp
 {
     public class FileCabinetRecord
     {
-        private static Dictionary<string, FileCabinetRecord> firstNameDictionary = new Dictionary<string, FileCabinetRecord>();
+        private static Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private static Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private string firstname;
         private string lastName;
         private DateTime dateOfbirth;
@@ -14,7 +15,7 @@ namespace FileCabinetApp
         private char key;
         private short passForCabinet;
 
-        public static Dictionary<string, FileCabinetRecord> FirstNameDictionary
+        public static Dictionary<string, List<FileCabinetRecord>> FirstNameDictionary
         {
             get
             {
@@ -24,6 +25,19 @@ namespace FileCabinetApp
             set
             {
                 firstNameDictionary = value;
+            }
+        }
+
+        public static Dictionary<string, List<FileCabinetRecord>> LastNameDictionary
+        {
+            get
+            {
+                return lastNameDictionary;
+            }
+
+            set
+            {
+                lastNameDictionary = value;
             }
         }
 
