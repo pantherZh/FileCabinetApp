@@ -8,6 +8,7 @@ namespace FileCabinetApp
     {
         private static Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private static Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private static Dictionary<DateTime, List<FileCabinetRecord>> dateOfbirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
         private string firstname;
         private string lastName;
         private DateTime dateOfbirth;
@@ -38,6 +39,19 @@ namespace FileCabinetApp
             set
             {
                 lastNameDictionary = value;
+            }
+        }
+
+        public static Dictionary<DateTime, List<FileCabinetRecord>> DateOfBirthDictionary
+        {
+            get
+            {
+                return dateOfbirthDictionary;
+            }
+
+            set
+            {
+                dateOfbirthDictionary = value;
             }
         }
 

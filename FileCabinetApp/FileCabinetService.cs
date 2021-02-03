@@ -93,16 +93,16 @@ namespace FileCabinetApp
 
         public static FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfbirth)
         {
-            List<FileCabinetRecord> namesArr = new List<FileCabinetRecord>();
-            foreach (var obj in List)
+            if (FileCabinetRecord.DateOfBirthDictionary.ContainsKey(dateOfbirth))
             {
-                if (dateOfbirth.Equals(obj.DateOfBirth))
-                {
-                    namesArr.Add(obj);
-                }
+                return FileCabinetRecord.DateOfBirthDictionary[dateOfbirth].ToArray();
+            }
+            else
+            {
+                Console.WriteLine($"{dateOfbirth} Key is not found.");
             }
 
-            return namesArr.ToArray();
+            return Array.Empty<FileCabinetRecord>();
         }
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
@@ -143,6 +143,16 @@ namespace FileCabinetApp
             else
             {
                 FileCabinetRecord.LastNameDictionary[lastName].Add(record);
+            }
+
+            if (!FileCabinetRecord.DateOfBirthDictionary.ContainsKey(dateOfBirth))
+            {
+                FileCabinetRecord.DateOfBirthDictionary.Add(dateOfBirth, new List<FileCabinetRecord>());
+                FileCabinetRecord.DateOfBirthDictionary[dateOfBirth].Add(record);
+            }
+            else
+            {
+                FileCabinetRecord.DateOfBirthDictionary[dateOfBirth].Add(record);
             }
 
             return record.Id;
