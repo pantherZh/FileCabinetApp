@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
@@ -21,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -31,6 +33,7 @@ namespace FileCabinetApp
             new string[] { "create", "creates record in file", "The 'create' command cretaes record in file." },
             new string[] { "list", "displays all records in file", "The 'list' command displays all records in file." },
             new string[] { "edit", "edits created files", "The 'edit' command edits created files." },
+            new string[] { "find", "finds first name", "The 'find' command finds first name." },
         };
 
         public static void Stat(string parameters)
@@ -170,6 +173,33 @@ namespace FileCabinetApp
             catch (ArgumentException e)
             {
                 Console.WriteLine(e.Message);
+            }
+        }
+
+        private static void Find(string parameters)
+        {
+            var inputs = parameters.Split(' ', 2);
+            if (inputs[0].Equals("firstname", StringComparison.OrdinalIgnoreCase))
+            {
+                foreach (var obj in FileCabinetService.FindByFirstName(inputs[1].ToString()))
+                {
+                    Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
+                }
+            }
+            else if (inputs[0].Equals("lastname", StringComparison.OrdinalIgnoreCase))
+            {
+                foreach (var obj in FileCabinetService.FindByLastName(inputs[1].ToString()))
+                {
+                    Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
+                }
+            }
+            else if (inputs[0].Equals("dateofbirth", StringComparison.OrdinalIgnoreCase))
+            {
+                _ = DateTime.TryParse(inputs[1], out DateTime dateOfbirth);
+                foreach (var obj in FileCabinetService.FindByDateOfBirth(dateOfbirth))
+                {
+                    Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
+                }
             }
         }
     }
