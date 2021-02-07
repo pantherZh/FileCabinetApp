@@ -8,7 +8,7 @@ namespace FileCabinetApp
     /// The repository class.
     /// Contains all methods for manipulating records.
     /// </summary>
-    public static class FileCabinetService
+    public abstract class FileCabinetService
     {
         private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
 
@@ -160,6 +160,9 @@ namespace FileCabinetApp
                 PassForCabinet = passForCabinet,
             };
 
+            FileCabinetDefaultService defaultValidator = new FileCabinetDefaultService();
+            defaultValidator.ValidateParameters(record);
+
             if (FileCabinetRecord.Error)
             {
                 return 0;
@@ -199,5 +202,11 @@ namespace FileCabinetApp
 
             return record.Id;
         }
+
+        /// <summary>
+        /// Abstract method for validation data.
+        /// </summary>
+        /// /// <param name="record">The salary to create.</param>
+        public abstract void ValidateParameters(FileCabinetRecord record);
     }
 }
