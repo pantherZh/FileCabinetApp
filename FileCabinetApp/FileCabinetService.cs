@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FileCabinetApp
 {
-    public class FileCabinetService
+    public static class FileCabinetService
     {
         private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
 
@@ -105,7 +105,7 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
+        public static int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
         {
             var record = new FileCabinetRecord
             {

@@ -38,8 +38,7 @@ namespace FileCabinetApp
 
         public static void Stat(string parameters)
         {
-            var recordsCount = FileCabinetService.GetStat;
-            Console.WriteLine($"{recordsCount} record(s).");
+            Console.WriteLine($"{FileCabinetService.GetStat} record(s).");
         }
 
         public static void Main(string[] args)
@@ -134,8 +133,7 @@ namespace FileCabinetApp
                 Console.Write("Password for Cabinet: ");
                 _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
 
-                FileCabinetService fls = new FileCabinetService();
-                id = fls.CreateRecord(firstName, lastName, dateOfBirth, salary, key, passForCabinet);
+                id = FileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, salary, key, passForCabinet);
             }
             while (FileCabinetRecord.Error);
             Console.WriteLine($"Record #{id} is created");
