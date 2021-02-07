@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// The program entry point.
+    /// Contains the Main method and helper methods and fields for manipulating records.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Alesya Zhovnerik";
@@ -36,12 +39,19 @@ namespace FileCabinetApp
             new string[] { "find", "finds first name", "The 'find' command finds first name." },
         };
 
+        /// <summary>
+        /// Returns the array of records.
+        /// </summary>
+        /// <param name="parameters">The first name to find.</param>
         public static void Stat(string parameters)
         {
             Console.WriteLine($"{FileCabinetService.GetStat} record(s).");
         }
 
-        public static void Main(string[] args)
+        /// <summary>
+        /// The program entry point.
+        /// </summary>
+        public static void Main()
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);

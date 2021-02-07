@@ -4,6 +4,10 @@ using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// The repository class.
+    /// Contains all properties and fields to build a record.
+    /// </summary>
     public class FileCabinetRecord
     {
         private static Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -16,6 +20,10 @@ namespace FileCabinetApp
         private char key;
         private short passForCabinet;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of FirstNameDictionary.</value>
         public static Dictionary<string, List<FileCabinetRecord>> FirstNameDictionary
         {
             get
@@ -29,6 +37,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of LastNameDictionary.</value>
         public static Dictionary<string, List<FileCabinetRecord>> LastNameDictionary
         {
             get
@@ -42,6 +54,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of DateOfBirthDictionary.</value>
         public static Dictionary<DateTime, List<FileCabinetRecord>> DateOfBirthDictionary
         {
             get
@@ -55,10 +71,22 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of Error.</value>
         public static bool Error { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of Id.</value>
         public int Id { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of FirstName.</value>
         public string FirstName
         {
             get
@@ -90,6 +118,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of LastName.</value>
         public string LastName
         {
             get
@@ -121,6 +153,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of DateOfBirth.</value>
         public DateTime DateOfBirth
         {
             get
@@ -148,6 +184,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of Salary.</value>
         public decimal Salary
         {
             get
@@ -174,6 +214,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of Key.</value>
         public char Key
         {
             get
@@ -200,6 +244,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of PassForCabinet.</value>
         public short PassForCabinet
         {
             get
