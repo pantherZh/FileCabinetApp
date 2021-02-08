@@ -160,6 +160,13 @@ namespace FileCabinetApp
                 PassForCabinet = passForCabinet,
             };
 
+            if (FileCabinetRecord.CustomValidator)
+            {
+                FileCabinetCustomService customValidator = new FileCabinetCustomService();
+                customValidator.ValidateParameters(record);
+            }
+
+            FileCabinetRecord.DefaultValidator = true;
             FileCabinetDefaultService defaultValidator = new FileCabinetDefaultService();
             defaultValidator.ValidateParameters(record);
 

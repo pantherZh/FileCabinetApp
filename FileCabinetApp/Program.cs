@@ -51,11 +51,23 @@ namespace FileCabinetApp
         /// <summary>
         /// The program entry point.
         /// </summary>
-        public static void Main()
+        /// <param name="args">The first name to create.</param>
+        public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
+            Console.WriteLine(FileCabinetRecord.CustomValidator);
+
+            if (args.Length == 1 && args[0].Contains("--validation-rules=custom", StringComparison.OrdinalIgnoreCase))
+            {
+                FileCabinetRecord.CustomValidator = true;
+            }
+
+            if (args.Length > 1 && args[1].Contains("Custom", StringComparison.OrdinalIgnoreCase) && args[0].Contains("-v", StringComparison.OrdinalIgnoreCase))
+            {
+                FileCabinetRecord.CustomValidator = true;
+            }
 
             do
             {

@@ -13,12 +13,18 @@ namespace FileCabinetApp
         private static Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private static Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private static Dictionary<DateTime, List<FileCabinetRecord>> dateOfbirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
-        //private string firstname;
-        //private string lastName;
-        //private DateTime dateOfbirth;
-        //private decimal salary;
-        //private char key;
-        //private short passForCabinet;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of DefaultValidator.</value>
+        public static bool DefaultValidator { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of CustomValidator.</value>
+        public static bool CustomValidator { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets indicating whether.

@@ -75,7 +75,7 @@ namespace FileCabinetApp
 
             try
             {
-                if (char.IsLetter(record.Key))
+                if (!char.IsLetter(record.Key))
                 {
                     throw new ArgumentException($"{nameof(record.Key)} isn't correct.");
                 }
