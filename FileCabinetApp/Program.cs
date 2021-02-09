@@ -4,6 +4,18 @@ using System.Globalization;
 namespace FileCabinetApp
 {
     /// <summary>
+    /// Interface-validator.
+    /// </summary>
+    internal interface IRecordValidator
+    {
+        /// <summary>
+        /// Method-validator of data.
+        /// </summary>
+        /// <param name="record">The record to create.</param>
+        void ValidateParameters(FileCabinetRecord record);
+    }
+
+    /// <summary>
     /// The program entry point.
     /// Contains the Main method and helper methods and fields for manipulating records.
     /// </summary>
