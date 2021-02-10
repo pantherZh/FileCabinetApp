@@ -8,9 +8,20 @@ namespace FileCabinetApp
     /// The repository class.
     /// Contains all methods for manipulating records.
     /// </summary>
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
+        private readonly IRecordValidator validator;
         private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Constructor injection.
+        /// </summary>
+        /// <param name="validator">The record to edit.</param>
+        public FileCabinetService(IRecordValidator validator)
+        {
+            this.validator = validator;
+        }
 
         /// <summary>
         /// Gets a value indicating whether gets or sets indicating whether.
@@ -147,7 +158,7 @@ namespace FileCabinetApp
         /// <param name="key">The key to create.</param>
         /// <param name="passForCabinet">The password for cabinet to create.</param>
         /// <returns>The value of id.</returns>
-        public static int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
+        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
         {
             var record = new FileCabinetRecord
             {
@@ -160,15 +171,16 @@ namespace FileCabinetApp
                 PassForCabinet = passForCabinet,
             };
 
-            if (FileCabinetRecord.CustomValidator)
-            {
-                FileCabinetCustomService customValidator = new FileCabinetCustomService();
-                customValidator.ValidateParameters(record);
-            }
+            //if (this.validator is CustomValidator)
+            //{
+            //    //FileCabinetCustomService customValidator = new FileCabinetCustomService();
+            //    //customValidator.ValidateParameters(record);
+            //    this.validator.ValidateParameters(record);
+            //}
 
-            FileCabinetRecord.DefaultValidator = true;
-            FileCabinetDefaultService defaultValidator = new FileCabinetDefaultService();
-            defaultValidator.ValidateParameters(record);
+            ////FileCabinetRecord.DefaultValidator = true;
+            ////FileCabinetDefaultService defaultValidator = new FileCabinetDefaultService();
+            this.validator.ValidateParameters(record);
 
             if (FileCabinetRecord.Error)
             {
@@ -214,6 +226,6 @@ namespace FileCabinetApp
         /// Abstract method for validation data.
         /// </summary>
         /// /// <param name="record">The salary to create.</param>
-        public abstract void ValidateParameters(FileCabinetRecord record);
+        //public abstract void ValidateParameters(FileCabinetRecord record);
     }
 }

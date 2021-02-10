@@ -7,13 +7,13 @@ namespace FileCabinetApp
     /// <summary>
     /// Class-validator with default settings.
     /// </summary>
-    public class FileCabinetDefaultService : FileCabinetService
+    public class FileCabinetDefaultService : IRecordValidator
     {
         /// <summary>
         /// Mrthod sets default settings.
         /// </summary>
         /// /// <param name="record">The salary to create.</param>
-        public override void ValidateParameters(FileCabinetRecord record)
+        public void ValidateParameters(FileCabinetRecord record)
         {
             if (record is null)
             {

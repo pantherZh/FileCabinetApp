@@ -6,7 +6,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Interface-validator.
     /// </summary>
-    internal interface IRecordValidator
+    public interface IRecordValidator
     {
         /// <summary>
         /// Method-validator of data.
@@ -74,12 +74,16 @@ namespace FileCabinetApp
             if (args.Length == 1 && args[0].Contains("--validation-rules=custom", StringComparison.OrdinalIgnoreCase))
             {
                 FileCabinetRecord.CustomValidator = true;
+                //_ = new FileCabinetService(new CustomValidator());
             }
 
             if (args.Length > 1 && args[1].Contains("Custom", StringComparison.OrdinalIgnoreCase) && args[0].Contains("-v", StringComparison.OrdinalIgnoreCase))
             {
                 FileCabinetRecord.CustomValidator = true;
+                //_ = new FileCabinetService(new CustomValidator());
             }
+
+            //_ = new FileCabinetService(new DefaultValidator());
 
             do
             {
@@ -167,7 +171,17 @@ namespace FileCabinetApp
                 Console.Write("Password for Cabinet: ");
                 _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
 
-                id = FileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, salary, key, passForCabinet);
+                FileCabinetService objCreate;
+                if (FileCabinetRecord.CustomValidator)
+                {
+                    objCreate = new FileCabinetService(new CustomValidator());
+                }
+                else
+                {
+                    objCreate = new FileCabinetService(new DefaultValidator());
+                }
+
+                id = objCreate.CreateRecord(firstName, lastName, dateOfBirth, salary, key, passForCabinet);
             }
             while (FileCabinetRecord.Error);
             Console.WriteLine($"Record #{id} is created");
