@@ -10,8 +10,8 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetService
     {
-        private readonly IRecordValidator validator;
         private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
+        private readonly IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
@@ -171,15 +171,6 @@ namespace FileCabinetApp
                 PassForCabinet = passForCabinet,
             };
 
-            //if (this.validator is CustomValidator)
-            //{
-            //    //FileCabinetCustomService customValidator = new FileCabinetCustomService();
-            //    //customValidator.ValidateParameters(record);
-            //    this.validator.ValidateParameters(record);
-            //}
-
-            ////FileCabinetRecord.DefaultValidator = true;
-            ////FileCabinetDefaultService defaultValidator = new FileCabinetDefaultService();
             this.validator.ValidateParameters(record);
 
             if (FileCabinetRecord.Error)
@@ -221,11 +212,5 @@ namespace FileCabinetApp
 
             return record.Id;
         }
-
-        /// <summary>
-        /// Abstract method for validation data.
-        /// </summary>
-        /// /// <param name="record">The salary to create.</param>
-        //public abstract void ValidateParameters(FileCabinetRecord record);
     }
 }
