@@ -185,7 +185,7 @@ namespace FileCabinetApp
 
         private static void List(string parameters)
         {
-            if (FileCabinetService.GetRecords().Length == 0)
+            if (FileCabinetService.GetRecords().Count == 0)
             {
                 Console.WriteLine("The list is empty.");
             }

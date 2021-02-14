@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
 {
@@ -11,6 +12,7 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
+        private static ReadOnlyCollection<FileCabinetRecord> readOnlyList = new ReadOnlyCollection<FileCabinetRecord>(List);
         private readonly IRecordValidator validator;
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace FileCabinetApp
         {
             get
             {
-                return List.Count;
+                return readOnlyList.Count;
             }
         }
 
@@ -39,9 +41,9 @@ namespace FileCabinetApp
         /// Returns the array of records.
         /// </summary>
         /// <returns>The array of records.</returns>
-        public static FileCabinetRecord[] GetRecords()
+        public static ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return List.ToArray();
+            return readOnlyList;
         }
 
         /// <summary>
