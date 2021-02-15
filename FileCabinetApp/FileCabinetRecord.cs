@@ -18,7 +18,7 @@ namespace FileCabinetApp
         /// Gets or sets a value indicating whether gets or sets indicating whether.
         /// </summary>
         /// <value>Gets or sets the value of DefaultValidator.</value>
-        public static bool DefaultValidator { get; set; } = true;
+        //public static bool DefaultValidator { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets indicating whether.

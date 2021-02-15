@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace FileCabinetApp
 {
@@ -9,21 +9,10 @@ namespace FileCabinetApp
     /// The repository class.
     /// Contains all methods for manipulating records.
     /// </summary>
-    public class FileCabinetService
+    public static class FileCabinetService
     {
         private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
         private static ReadOnlyCollection<FileCabinetRecord> readOnlyList = new ReadOnlyCollection<FileCabinetRecord>(List);
-        private readonly IRecordValidator validator;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
-        /// Constructor injection.
-        /// </summary>
-        /// <param name="validator">The record to edit.</param>
-        public FileCabinetService(IRecordValidator validator)
-        {
-            this.validator = validator;
-        }
 
         /// <summary>
         /// Gets a value indicating whether gets or sets indicating whether.
@@ -160,7 +149,7 @@ namespace FileCabinetApp
         /// <param name="key">The key to create.</param>
         /// <param name="passForCabinet">The password for cabinet to create.</param>
         /// <returns>The value of id.</returns>
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
+        public static int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
         {
             var record = new FileCabinetRecord
             {
@@ -172,13 +161,6 @@ namespace FileCabinetApp
                 Key = key,
                 PassForCabinet = passForCabinet,
             };
-
-            this.validator.ValidateParameters(record);
-
-            if (FileCabinetRecord.Error)
-            {
-                return 0;
-            }
 
             List.Add(record);
 
@@ -213,6 +195,51 @@ namespace FileCabinetApp
             }
 
             return record.Id;
+        }
+
+        /// <summary>
+        /// Finds FirstName in the array.
+        /// </summary>
+        /// <param name="converter">To convert data.</param>
+        /// <param name="validator">To validate data.</param>
+        /// <returns>The value of id.</returns>
+        public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            if (converter is null)
+            {
+                throw new ArgumentNullException($"{converter} is null.");
+            }
+
+            if (validator is null)
+            {
+                throw new ArgumentNullException($"{validator} is null.");
+            }
+
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
     }
 }
