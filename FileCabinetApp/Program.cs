@@ -1,9 +1,60 @@
 ﻿using System;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Interface-validator.
+    /// </summary>
+    public interface IRecordValidator
+    {
+        /// <summary>
+        /// Method-validator of data.
+        /// </summary>
+        /// <param name="firstName">The record to create.</param>
+        /// <returns>The tuple from bool and string.</returns>
+        Tuple<bool, string> FirstNameValidator(string firstName);
+
+        /// <summary>
+        /// Method-validator of data.
+        /// </summary>
+        /// <param name="lastName">The record to create.</param>
+        /// <returns>The tuple from bool and string.</returns>
+        Tuple<bool, string> LastNameValidator(string lastName);
+
+        /// <summary>
+        /// Method-validator of data.
+        /// </summary>
+        /// <param name="birthDay">The record to create.</param>
+        /// <returns>The tuple from bool and string.</returns>
+        Tuple<bool, string> BirhtdayValidator(DateTime birthDay);
+
+        /// <summary>
+        /// Method-validator of data.
+        /// </summary>
+        /// <param name="salary">The record to create.</param>
+        /// <returns>The tuple from bool and string.</returns>
+        Tuple<bool, string> SalaryValidator(decimal salary);
+
+        /// <summary>
+        /// Method-validator of data.
+        /// </summary>
+        /// <param name="key">The record to create.</param>
+        /// <returns>The tuple from bool and string.</returns>
+        Tuple<bool, string> KeyValidator(char key);
+
+        /// <summary>
+        /// Method-validator of data.
+        /// </summary>
+        /// <param name="passForCabinet">The record to create.</param>
+        /// <returns>The tuple from bool and string.</returns>
+        Tuple<bool, string> PassForCabinetValidator(short passForCabinet);
+    }
+
+    /// <summary>
+    /// The program entry point.
+    /// Contains the Main method and helper methods and fields for manipulating records.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Alesya Zhovnerik";
@@ -36,17 +87,35 @@ namespace FileCabinetApp
             new string[] { "find", "finds first name", "The 'find' command finds first name." },
         };
 
+        /// <summary>
+        /// Returns the array of records.
+        /// </summary>
+        /// <param name="parameters">The first name to find.</param>
         public static void Stat(string parameters)
         {
-            var recordsCount = FileCabinetService.GetStat;
-            Console.WriteLine($"{recordsCount} record(s).");
+            Console.WriteLine($"{FileCabinetService.GetStat} record(s).");
         }
 
+        /// <summary>
+        /// The program entry point.
+        /// </summary>
+        /// <param name="args">The first name to create.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
+            Console.WriteLine(FileCabinetRecord.CustomValidator);
+
+            if (args.Length == 1 && args[0].Contains("--validation-rules=custom", StringComparison.OrdinalIgnoreCase))
+            {
+                FileCabinetRecord.CustomValidator = true;
+            }
+
+            if (args.Length > 1 && args[1].Contains("Custom", StringComparison.OrdinalIgnoreCase) && args[0].Contains("-v", StringComparison.OrdinalIgnoreCase))
+            {
+                FileCabinetRecord.CustomValidator = true;
+            }
 
             do
             {
@@ -117,33 +186,42 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
+            IRecordValidator validator;
             int id;
-            do
+            if (FileCabinetRecord.CustomValidator)
             {
-                FileCabinetRecord.Error = false;
-                Console.Write("First Name: ");
-                string firstName = Console.ReadLine();
-                Console.Write("Last Name: ");
-                string lastName = Console.ReadLine();
-                Console.Write("Date Time(MM/dd/yyyy): ");
-                _ = DateTime.TryParse(Console.ReadLine(), out DateTime dateOfBirth);
-                Console.Write("Salary: ");
-                _ = decimal.TryParse(Console.ReadLine(), out decimal salary);
-                Console.Write("Key(A-Z): ");
-                _ = char.TryParse(Console.ReadLine(), out char key);
-                Console.Write("Password for Cabinet: ");
-                _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
-
-                FileCabinetService fls = new FileCabinetService();
-                id = fls.CreateRecord(firstName, lastName, dateOfBirth, salary, key, passForCabinet);
+                validator = new CustomValidator();
             }
-            while (FileCabinetRecord.Error);
+            else
+            {
+                validator = new DefaultValidator();
+            }
+
+            Console.Write("First name: ");
+            var firstName = FileCabinetService.ReadInput(StringConverter, validator.FirstNameValidator);
+
+            Console.Write("Last name: ");
+            var lastName = FileCabinetService.ReadInput(StringConverter, validator.LastNameValidator);
+
+            Console.Write("Date of birth: ");
+            var dob = FileCabinetService.ReadInput(DateConverter, validator.BirhtdayValidator);
+
+            Console.Write("Salary: ");
+            var salary = FileCabinetService.ReadInput(DecimalConverter, validator.SalaryValidator);
+
+            Console.Write("Key: ");
+            var key = FileCabinetService.ReadInput(CharConverter, validator.KeyValidator);
+
+            Console.Write("Password for cabinet: ");
+            var passForCabinet = FileCabinetService.ReadInput(ShortConverter, validator.PassForCabinetValidator);
+
+            id = FileCabinetService.CreateRecord(firstName, lastName, dob, salary, key, passForCabinet);
             Console.WriteLine($"Record #{id} is created");
         }
 
         private static void List(string parameters)
         {
-            if (FileCabinetService.GetRecords().Length == 0)
+            if (FileCabinetService.GetRecords().Count == 0)
             {
                 Console.WriteLine("The list is empty.");
             }
@@ -201,6 +279,51 @@ namespace FileCabinetApp
                     Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
                 }
             }
+        }
+
+        private static Tuple<bool, string, string> StringConverter(string input)
+        {
+            return new Tuple<bool, string, string>(true, input, input);
+        }
+
+        private static Tuple<bool, string, DateTime> DateConverter(string input)
+        {
+            if (DateTime.TryParse(input, out DateTime date))
+            {
+                return new Tuple<bool, string, DateTime>(true, input, date);
+            }
+
+            return new Tuple<bool, string, DateTime>(false, input, default);
+        }
+
+        private static Tuple<bool, string, decimal> DecimalConverter(string input)
+        {
+            if (decimal.TryParse(input, out decimal value))
+            {
+                return new Tuple<bool, string, decimal>(true, input, value);
+            }
+
+            return new Tuple<bool, string, decimal>(false, input, default);
+        }
+
+        private static Tuple<bool, string, char> CharConverter(string input)
+        {
+            if (char.TryParse(input, out char value))
+            {
+                return new Tuple<bool, string, char>(true, input, value);
+            }
+
+            return new Tuple<bool, string, char>(false, input, default);
+        }
+
+        private static Tuple<bool, string, short> ShortConverter(string input)
+        {
+            if (short.TryParse(input, out short value))
+            {
+                return new Tuple<bool, string, short>(true, input, value);
+            }
+
+            return new Tuple<bool, string, short>(false, input, default);
         }
     }
 }

@@ -1,40 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace FileCabinetApp
 {
-    public class FileCabinetService
+    /// <summary>
+    /// The repository class.
+    /// Contains all methods for manipulating records.
+    /// </summary>
+    public static class FileCabinetService
     {
         private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
+        private static ReadOnlyCollection<FileCabinetRecord> readOnlyList = new ReadOnlyCollection<FileCabinetRecord>(List);
 
+        /// <summary>
+        /// Gets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of FirstNameDictionary.</value>
         public static int GetStat
         {
             get
             {
-                return List.Count;
+                return readOnlyList.Count;
             }
         }
 
-        public static FileCabinetRecord[] GetRecords()
+        /// <summary>
+        /// Returns the array of records.
+        /// </summary>
+        /// <returns>The array of records.</returns>
+        public static ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return List.ToArray();
+            return readOnlyList;
         }
 
-        public static void EditRecord(int id, FileCabinetRecord flc)
+        /// <summary>
+        /// Allows to correct records in the array.
+        /// </summary>
+        /// <param name="id">The id to edit.</param>
+        /// <param name="record">The record to edit.</param>
+        public static void EditRecord(int id, FileCabinetRecord record)
         {
-            if (flc is null)
+            if (record is null)
             {
-                throw new ArgumentNullException($"{nameof(flc)} is null.");
+                throw new ArgumentNullException($"{nameof(record)} is null.");
             }
 
-            FileCabinetRecord.FirstNameDictionary.Remove(flc.FirstName);
-            FileCabinetRecord.LastNameDictionary.Remove(flc.LastName);
+            FileCabinetRecord.FirstNameDictionary.Remove(record.FirstName);
+            FileCabinetRecord.LastNameDictionary.Remove(record.LastName);
 
             Console.Write("First Name: ");
-            flc.FirstName = Console.ReadLine();
+            record.FirstName = Console.ReadLine();
             Console.Write("Last Name: ");
-            flc.LastName = Console.ReadLine();
+            record.LastName = Console.ReadLine();
             Console.Write("Date Time(MM/dd/yyyy): ");
             _ = DateTime.TryParse(Console.ReadLine(), out DateTime dateOfBirth);
             Console.Write("Salary: ");
@@ -43,16 +62,21 @@ namespace FileCabinetApp
             _ = char.TryParse(Console.ReadLine(), out char key);
             Console.Write("Password for Cabinet: ");
             _ = short.TryParse(Console.ReadLine(), out short passForCabinet);
-            flc.DateOfBirth = dateOfBirth;
-            flc.Salary = salary;
-            flc.Key = key;
-            flc.PassForCabinet = passForCabinet;
+            record.DateOfBirth = dateOfBirth;
+            record.Salary = salary;
+            record.Key = key;
+            record.PassForCabinet = passForCabinet;
 
-            FileCabinetRecord.FirstNameDictionary[flc.FirstName] = new List<FileCabinetRecord> { flc };
-            FileCabinetRecord.LastNameDictionary[flc.LastName] = new List<FileCabinetRecord> { flc };
-            List[id - 1] = flc;
+            FileCabinetRecord.FirstNameDictionary[record.FirstName] = new List<FileCabinetRecord> { record };
+            FileCabinetRecord.LastNameDictionary[record.LastName] = new List<FileCabinetRecord> { record };
+            List[id - 1] = record;
         }
 
+        /// <summary>
+        /// Finds FirstName in the array.
+        /// </summary>
+        /// <param name="firstName">The first name to find.</param>
+        /// <returns>The array of records.</returns>
         public static FileCabinetRecord[] FindByFirstName(string firstName)
         {
             if (firstName is null)
@@ -72,6 +96,11 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Finds LastName in the array.
+        /// </summary>
+        /// <param name="lastName">The last name to find.</param>
+        /// <returns>The array of records.</returns>
         public static FileCabinetRecord[] FindByLastName(string lastName)
         {
             if (lastName is null)
@@ -91,6 +120,11 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Finds DateOfBirth in the array.
+        /// </summary>
+        /// <param name="dateOfbirth">The date of birth to find.</param>
+        /// <returns>The array of records.</returns>
         public static FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfbirth)
         {
             if (FileCabinetRecord.DateOfBirthDictionary.ContainsKey(dateOfbirth))
@@ -105,7 +139,17 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
+        /// <summary>
+        /// Finds FirstName in the array.
+        /// </summary>
+        /// <param name="firstName">The first name to create.</param>
+        /// <param name="lastName">The last name to create.</param>
+        /// <param name="dateOfBirth">The date of birth to create.</param>
+        /// <param name="salary">The salary to create.</param>
+        /// <param name="key">The key to create.</param>
+        /// <param name="passForCabinet">The password for cabinet to create.</param>
+        /// <returns>The value of id.</returns>
+        public static int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
         {
             var record = new FileCabinetRecord
             {
@@ -117,11 +161,6 @@ namespace FileCabinetApp
                 Key = key,
                 PassForCabinet = passForCabinet,
             };
-
-            if (FileCabinetRecord.Error)
-            {
-                return 0;
-            }
 
             List.Add(record);
 
@@ -156,6 +195,51 @@ namespace FileCabinetApp
             }
 
             return record.Id;
+        }
+
+        /// <summary>
+        /// Finds FirstName in the array.
+        /// </summary>
+        /// <param name="converter">To convert data.</param>
+        /// <param name="validator">To validate data.</param>
+        /// <returns>The value of id.</returns>
+        public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            if (converter is null)
+            {
+                throw new ArgumentNullException($"{converter} is null.");
+            }
+
+            if (validator is null)
+            {
+                throw new ArgumentNullException($"{validator} is null.");
+            }
+
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
     }
 }
