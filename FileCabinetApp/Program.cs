@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 
 namespace FileCabinetApp
 {
@@ -74,6 +75,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", Export),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -85,6 +87,7 @@ namespace FileCabinetApp
             new string[] { "list", "displays all records in file", "The 'list' command displays all records in file." },
             new string[] { "edit", "edits created files", "The 'edit' command edits created files." },
             new string[] { "find", "finds first name", "The 'find' command finds first name." },
+            new string[] { "export csv", "exports to csv", "The 'exports csv' command exports to csv." },
         };
 
         /// <summary>
@@ -278,6 +281,32 @@ namespace FileCabinetApp
                 {
                     Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
                 }
+            }
+        }
+
+        private static void Export(string parameters)
+        {
+            var inputs = parameters.Split(' ', 2);
+            if (inputs.Length != 2)
+            {
+                Console.WriteLine("Input file name!");
+                return;
+            }
+
+            switch (inputs[0])
+            {
+                case "csv":
+                    using (StreamWriter sw = new StreamWriter(inputs[1]))
+                    {
+                        var snap = FileCabinetService.MakeSnapshot();
+                        snap.SaveToCsv(sw);
+                        sw.Close();
+                        Console.WriteLine($"All records are exported to file {inputs[1]}.csv.");
+                    }
+
+                    break;
+                case "xml":
+                    break;
             }
         }
 
