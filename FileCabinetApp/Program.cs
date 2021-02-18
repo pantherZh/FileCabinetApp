@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -293,6 +294,21 @@ namespace FileCabinetApp
                 return;
             }
 
+            if (File.Exists(inputs[1]))
+            {
+                Console.WriteLine($"File is exist - rewrite {inputs[1]}? [Y/n]");
+                var reader = Console.ReadLine();
+                if (reader.Contains('n', StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+                else if (!reader.Contains('y', StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("Input correct answer!");
+                    return;
+                }
+            }
+
             switch (inputs[0])
             {
                 case "csv":
@@ -306,6 +322,14 @@ namespace FileCabinetApp
 
                     break;
                 case "xml":
+                    using (XmlWriter xw = XmlWriter.Create(inputs[1]))
+                    {
+                        var snap = FileCabinetService.MakeSnapshot();
+                        snap.SaveToXml(xw);
+                        xw.Close();
+                        Console.WriteLine($"All records are exported to file {inputs[1]}.xml.");
+                    }
+
                     break;
             }
         }

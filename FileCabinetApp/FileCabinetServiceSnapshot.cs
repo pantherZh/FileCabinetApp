@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -28,6 +29,16 @@ namespace FileCabinetApp
         {
             FileCabinetRecordCsvWriter csvWriter = new FileCabinetRecordCsvWriter(streamWriter);
             csvWriter.Write(this.records);
+        }
+
+        /// <summary>
+        /// Save to XML format.
+        /// </summary>
+        /// <param name="xmlWriter">The list from records.</param>
+        public void SaveToXml(XmlWriter xmlWriter)
+        {
+            FileCabinetRecordXmlWriter writer = new FileCabinetRecordXmlWriter(xmlWriter);
+            writer.Write(this.records);
         }
     }
 }

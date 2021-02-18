@@ -5,7 +5,7 @@ using System.IO;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Class-Writer in file.
+    /// Class-Writer in file.csv.
     /// </summary>
     public class FileCabinetRecordCsvWriter
     {
