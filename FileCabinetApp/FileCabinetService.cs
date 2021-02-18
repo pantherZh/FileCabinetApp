@@ -241,5 +241,15 @@ namespace FileCabinetApp
             }
             while (true);
         }
+
+        /// <summary>
+        /// Make snapshot with class memory.
+        /// </summary>
+        /// <returns>FileCabinetServiceSnapshot object.</returns>
+        public static FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot(List.ToArray());
+            return snapshot;
+        }
     }
 }
