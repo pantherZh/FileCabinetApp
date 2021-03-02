@@ -23,6 +23,12 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets indicating whether.
         /// </summary>
+        /// <value>Gets or sets the value of CustomValidator.</value>
+        public static bool FileStorage { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
         /// <value>Gets or sets the value of FirstNameDictionary.</value>
         public static Dictionary<string, List<FileCabinetRecord>> FirstNameDictionary
         {

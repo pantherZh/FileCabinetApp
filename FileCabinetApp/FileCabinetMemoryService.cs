@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// The repository class.
     /// Contains all methods for manipulating records.
     /// </summary>
-    public static class FileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
         private static ReadOnlyCollection<FileCabinetRecord> readOnlyList = new ReadOnlyCollection<FileCabinetRecord>(List);
@@ -30,7 +30,7 @@ namespace FileCabinetApp
         /// Returns the array of records.
         /// </summary>
         /// <returns>The array of records.</returns>
-        public static ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             return readOnlyList;
         }
@@ -40,7 +40,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="id">The id to edit.</param>
         /// <param name="record">The record to edit.</param>
-        public static void EditRecord(int id, FileCabinetRecord record)
+        public void EditRecord(int id, FileCabinetRecord record)
         {
             if (record is null)
             {
@@ -77,7 +77,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The first name to find.</param>
         /// <returns>The array of records.</returns>
-        public static FileCabinetRecord[] FindByFirstName(string firstName)
+        public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             if (firstName is null)
             {
@@ -101,7 +101,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">The last name to find.</param>
         /// <returns>The array of records.</returns>
-        public static FileCabinetRecord[] FindByLastName(string lastName)
+        public FileCabinetRecord[] FindByLastName(string lastName)
         {
             if (lastName is null)
             {
@@ -125,7 +125,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfbirth">The date of birth to find.</param>
         /// <returns>The array of records.</returns>
-        public static FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfbirth)
+        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfbirth)
         {
             if (FileCabinetRecord.DateOfBirthDictionary.ContainsKey(dateOfbirth))
             {
@@ -149,7 +149,7 @@ namespace FileCabinetApp
         /// <param name="key">The key to create.</param>
         /// <param name="passForCabinet">The password for cabinet to create.</param>
         /// <returns>The value of id.</returns>
-        public static int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
+        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, decimal salary, char key, short passForCabinet)
         {
             var record = new FileCabinetRecord
             {
@@ -197,12 +197,12 @@ namespace FileCabinetApp
             return record.Id;
         }
 
-        /// <summary>
-        /// Finds FirstName in the array.
-        /// </summary>
-        /// <param name="converter">To convert data.</param>
-        /// <param name="validator">To validate data.</param>
-        /// <returns>The value of id.</returns>
+        // <summary>
+        // Finds FirstName in the array.
+        // </summary>
+        // <param name = "converter" > To convert data.</param>
+        // <param name = "validator" > To validate data.</param>
+        // <returns>The value of id.</returns>
         public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
             if (converter is null)
