@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
 {
@@ -14,11 +15,19 @@ namespace FileCabinetApp
         private static Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private static Dictionary<DateTime, List<FileCabinetRecord>> dateOfbirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        public static readonly List<FileCabinetRecord> List = new List<FileCabinetRecord>();
+        public static ReadOnlyCollection<FileCabinetRecord> readOnlyList = new ReadOnlyCollection<FileCabinetRecord>(List);
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets indicating whether.
         /// </summary>
         /// <value>Gets or sets the value of CustomValidator.</value>
         public static bool CustomValidator { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets indicating whether.
+        /// </summary>
+        /// <value>Gets or sets the value of CustomValidator.</value>
+        public static bool FileStorage { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether gets or sets indicating whether.

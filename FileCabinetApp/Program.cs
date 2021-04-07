@@ -64,7 +64,7 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-
+        private static IFileCabinetService stream;
         private static bool isRunning = true;
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
@@ -97,7 +97,7 @@ namespace FileCabinetApp
         /// <param name="parameters">The first name to find.</param>
         public static void Stat(string parameters)
         {
-            Console.WriteLine($"{FileCabinetService.GetStat} record(s).");
+            Console.WriteLine($"{stream.GetStat()} record(s).");
         }
 
         /// <summary>
@@ -111,14 +111,43 @@ namespace FileCabinetApp
             Console.WriteLine();
             Console.WriteLine(FileCabinetRecord.CustomValidator);
 
-            if (args.Length == 1 && args[0].Contains("--validation-rules=custom", StringComparison.OrdinalIgnoreCase))
+            if (args.Length != 0)
             {
-                FileCabinetRecord.CustomValidator = true;
+                if (args[0].Contains("--validation-rules=custom", StringComparison.OrdinalIgnoreCase) || args[0].Contains("-v", StringComparison.OrdinalIgnoreCase))
+                {
+                    FileCabinetRecord.CustomValidator = true;
+                    Console.WriteLine("Valid");
+                }
+
+                if (args.Length > 1 && args[1].Contains("custom", StringComparison.OrdinalIgnoreCase))
+                {
+                    FileCabinetRecord.CustomValidator = true;
+                    Console.WriteLine("Valid");
+                }
+
+                if (args[0].Contains("--storage=file", StringComparison.OrdinalIgnoreCase) || args[0].Contains("-s", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (File.Exists("cabinet-records.db"))
+                    {
+                        File.Delete("cabinet-records.db");
+                    }
+
+                    FileStream fs = File.Create("cabinet-records.db");
+                    stream = new FileCabinetFilesystemService(fs);
+                    FileCabinetRecord.FileStorage = true;
+                }
+
+                if (args.Length > 1 && args[1].Contains("file", StringComparison.OrdinalIgnoreCase))
+                {
+                    FileStream fs = File.Create("cabinet-records.db");
+                    stream = new FileCabinetFilesystemService(fs);
+                    FileCabinetRecord.FileStorage = true;
+                }
             }
 
-            if (args.Length > 1 && args[1].Contains("Custom", StringComparison.OrdinalIgnoreCase) && args[0].Contains("-v", StringComparison.OrdinalIgnoreCase))
+            if (!FileCabinetRecord.FileStorage)
             {
-                FileCabinetRecord.CustomValidator = true;
+                stream = new FileCabinetMemoryService();
             }
 
             do
@@ -202,50 +231,54 @@ namespace FileCabinetApp
             }
 
             Console.Write("First name: ");
-            var firstName = FileCabinetService.ReadInput(StringConverter, validator.FirstNameValidator);
+            var firstName = ReadInput(StringConverter, validator.FirstNameValidator);
 
             Console.Write("Last name: ");
-            var lastName = FileCabinetService.ReadInput(StringConverter, validator.LastNameValidator);
+            var lastName = ReadInput(StringConverter, validator.LastNameValidator);
 
             Console.Write("Date of birth: ");
-            var dob = FileCabinetService.ReadInput(DateConverter, validator.BirhtdayValidator);
+            var dob = ReadInput(DateConverter, validator.BirhtdayValidator);
 
             Console.Write("Salary: ");
-            var salary = FileCabinetService.ReadInput(DecimalConverter, validator.SalaryValidator);
+            var salary = ReadInput(DecimalConverter, validator.SalaryValidator);
 
             Console.Write("Key: ");
-            var key = FileCabinetService.ReadInput(CharConverter, validator.KeyValidator);
+            var key = ReadInput(CharConverter, validator.KeyValidator);
 
             Console.Write("Password for cabinet: ");
-            var passForCabinet = FileCabinetService.ReadInput(ShortConverter, validator.PassForCabinetValidator);
+            var passForCabinet = ReadInput(ShortConverter, validator.PassForCabinetValidator);
 
-            id = FileCabinetService.CreateRecord(firstName, lastName, dob, salary, key, passForCabinet);
+            id = stream.CreateRecord(firstName, lastName, dob, salary, key, passForCabinet);
             Console.WriteLine($"Record #{id} is created");
         }
 
         private static void List(string parameters)
         {
-            if (FileCabinetService.GetRecords().Count == 0)
+            if (stream.GetStat() == 0)
             {
                 Console.WriteLine("The list is empty.");
             }
 
-            foreach (var obj in FileCabinetService.GetRecords())
-            {
-                Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
-            }
+            stream.GetRecords();
         }
 
         private static void Edit(string parameters)
         {
             _ = int.TryParse(Console.ReadLine(), out int id);
-            foreach (var obj in FileCabinetService.GetRecords())
+            //if (FileCabinetRecord.FileStorage is false)
+            //{
+            //    foreach (var obj in stream.GetRecords())
+            //    {
+            //        if (obj.Id == id)
+            //        {
+            //            stream.EditRecord(obj.Id, obj);
+            //            return;
+            //        }
+            //    }
+            //}
+            if (stream.EditRecord(id))
             {
-                if (obj.Id == id)
-                {
-                    FileCabinetService.EditRecord(obj.Id, obj);
-                    return;
-                }
+                return;
             }
 
             try
@@ -263,14 +296,14 @@ namespace FileCabinetApp
             var inputs = parameters.Split(' ', 2);
             if (inputs[0].Equals("firstname", StringComparison.OrdinalIgnoreCase))
             {
-                foreach (var obj in FileCabinetService.FindByFirstName(inputs[1].ToString()))
+                foreach (var obj in stream.FindByFirstName(inputs[1].ToString()))
                 {
                     Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
                 }
             }
             else if (inputs[0].Equals("lastname", StringComparison.OrdinalIgnoreCase))
             {
-                foreach (var obj in FileCabinetService.FindByLastName(inputs[1].ToString()))
+                foreach (var obj in stream.FindByLastName(inputs[1].ToString()))
                 {
                     Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
                 }
@@ -278,7 +311,7 @@ namespace FileCabinetApp
             else if (inputs[0].Equals("dateofbirth", StringComparison.OrdinalIgnoreCase))
             {
                 _ = DateTime.TryParse(inputs[1], out DateTime dateOfbirth);
-                foreach (var obj in FileCabinetService.FindByDateOfBirth(dateOfbirth))
+                foreach (var obj in stream.FindByDateOfBirth(dateOfbirth))
                 {
                     Console.WriteLine("#" + obj.Id + ", " + obj.FirstName + ", " + obj.LastName + ", " + obj.DateOfBirth.ToString("D", CultureInfo.InvariantCulture) + ", " + obj.Salary + ", " + obj.Key + ", " + obj.PassForCabinet);
                 }
@@ -314,7 +347,7 @@ namespace FileCabinetApp
                 case "csv":
                     using (StreamWriter sw = new StreamWriter(inputs[1]))
                     {
-                        var snap = FileCabinetService.MakeSnapshot();
+                        var snap = FileCabinetMemoryService.MakeSnapshot();
                         snap.SaveToCsv(sw);
                         sw.Close();
                         Console.WriteLine($"All records are exported to file {inputs[1]}.csv.");
@@ -324,7 +357,7 @@ namespace FileCabinetApp
                 case "xml":
                     using (XmlWriter xw = XmlWriter.Create(inputs[1]))
                     {
-                        var snap = FileCabinetService.MakeSnapshot();
+                        var snap = FileCabinetMemoryService.MakeSnapshot();
                         snap.SaveToXml(xw);
                         xw.Close();
                         Console.WriteLine($"All records are exported to file {inputs[1]}.xml.");
@@ -377,6 +410,51 @@ namespace FileCabinetApp
             }
 
             return new Tuple<bool, string, short>(false, input, default);
+        }
+
+        // <summary>
+        // Finds FirstName in the array.
+        // </summary>
+        // <param name = "converter" > To convert data.</param>
+        // <param name = "validator" > To validate data.</param>
+        // <returns>The value of id.</returns>
+        public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            if (converter is null)
+            {
+                throw new ArgumentNullException($"{converter} is null.");
+            }
+
+            if (validator is null)
+            {
+                throw new ArgumentNullException($"{validator} is null.");
+            }
+
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
     }
 }
